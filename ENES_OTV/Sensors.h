@@ -125,6 +125,24 @@ public:
   int readRaw() {
     return digitalRead(switchPin);
   }
+
+class DutyCycle {
+  private:
+  int signalPin;
+  public:
+  DutyCycle(int pin)
+    : signalPin(pin) {}
+
+  void begin() {
+    pinMode(signalPin : INPUT);
+  }
+
+  float getDutyCycle() {
+    //measure high/low pulse time
+    unsigned long high = pulseIn(signalPin, HIGH, 300000)
+    unsigned long low = pulseIn()
+  }
+}
 };
 
 #endif

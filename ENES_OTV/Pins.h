@@ -81,6 +81,11 @@ const int RX_PIN1 = 52;
 // Mecanum drive PWM note
 // ========================================
 
+// ========================================
+// Duty Cycle
+// ========================================
+const int PWM1 = 1
+
 // Arduino Mega PWM pins include 2-13 and 44-46.
 // ENB_PIN1 = 4 is NOT PWM-capable.
 // If you need variable speed on this channel,
