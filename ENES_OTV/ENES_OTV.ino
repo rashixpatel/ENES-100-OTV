@@ -1,83 +1,114 @@
 
-// hbridge constants
-// 2 wheel motors
-const int ENB_PIN1 = 4; //Arduino pin connected to the EN1 pin L298N
-const int IN4_PIN1 = 5; //Arduino pin connected to the IN1 pin L298N
-const int IN3_PIN1 = 6; //Arduino pin connected to the IN2 pin L298N
-const int IN2_PIN1 = 7; //Arduino pin connected to the IN1 pin L298N
-const int IN1_PIN1 = 8; //Arduino pin connected to the IN2 pin L298N
-const int ENA_PIN1 = 9; //Arduino pin connected to the EN1 pin L298N
+#include "Pins.h"
+#include "Drive.h"
+#include "Sensors.h"
 
-//2 wheel motors
-const int ENB_PIN2 = 2; //Arduino pin connected to the EN1 pin L298N
-const int IN4_PIN2 = 28; //Arduino pin connected to the IN1 pin L298N
-const int IN3_PIN2 = 26; //Arduino pin connected to the IN2 pin L298N
-const int IN2_PIN2 = 24; //Arduino pin connected to the IN1 pin L298N
-const int IN1_PIN2 = 22; //Arduino pin connected to the IN2 pin L298N
-const int ENA_PIN2 = 3; //Arduino pin connected to the EN1 pin L298N
+// ========================================
+// Mecanum drive motors
+// ========================================
 
+Motor frontLeft(ENA_PIN1, IN1_PIN1, IN2_PIN1);
+Motor frontRight(ENB_PIN1, IN3_PIN1, IN4_PIN1);
+Motor backLeft(ENA_PIN2, IN1_PIN2, IN2_PIN2);
+Motor backRight(ENB_PIN2, IN3_PIN2, IN4_PIN2);
 
-//winch motors
-const int ENA_PIN3 = 12; //Arduino pin connected to the EN1 pin L298N
-const int IN1_PIN3 = 11; //Arduino pin connected to the IN1 pin L298N
-const int IN2_PIN3 = 10; //Arduino pin connected to the IN2 pin L298N
-
-//limit switch
-const int NO_PIN1 = 48; //Arduino pin connnected to the NO pin for lim switch
-
-//hall effect sensor
-const int OUTPUT_PIN1 = 46; //Arduino pin connnected to the OUTPUT pin for hall effect
-
-//ultrasonic constants
-//ultrasonic 1
-const int TRIG_PIN1 = A9; 
-const int ECHO_PIN1 = A8;
-
-//ultrasonic 2
-const int TRIG_PIN2 = A7;
-const int ECHO_PIN2 = A6;
-
-//servo
-const int PWM_PIN1 = 13;
-
-//wifi module
-const int TX_PIN1 = 50;
-const int RX_PIN1 = 52;
+MecanumDrive drive(
+  frontLeft,
+  frontRight,
+  backLeft,
+  backRight
+);
 
 
+// ========================================
+// Sensors
+// ========================================
+
+HallEffect hall(OUTPUT_PIN1, true);
+
+Ultrasonic ultrasonic1(TRIG_PIN1, ECHO_PIN1);
+Ultrasonic ultrasonic2(TRIG_PIN2, ECHO_PIN2);
+
+LimitSwitch limitSwitch(NO_PIN1, true);
 
 
-// the setup function runs once when you press reset or power the board
+// ========================================
+// Setup
+// ========================================
+
 void setup() {
-  Enes100.begin("Data Divers", DATA, 69, 1120, TX_PIN1, TX_PIN1)
-  // initialize digital pins as outputs.
-  pinMode(ENA_PIN, OUTPUT);
-  pinMode(IN1_PIN, OUTPUT);
-  pinMode(IN2_PIN, OUTPUT);
+  Serial.begin(9600);
+
+  // Initialize drive motors
+  drive.begin();
+
+  // Initialize sensors
+  hall.begin();
+  ultrasonic1.begin();
+  ultrasonic2.begin();
+  limitSwitch.begin();
+
+  Serial.println("ENES OTV initialized");
 }
 
-// the loop function runs over and over again forever
+
+// ========================================
+// Main loop
+// ========================================
+
 void loop() {
-  digitalWrite(IN1_PIN, HIGH); // control motor A spins clockwise
-  digitalWrite(IN2_PIN, LOW);  // control motor A spins clockwise
+  // --------------------------------------
+  // Hall effect sensor
+  // --------------------------------------
 
-  for (int speed = 0; speed <= 255; speed++) {
-    analogWrite(ENA_PIN, speed); // control the speed
-    delay(10);
+  if (hall.detected()) {
+    Serial.println("Magnet detected");
   }
 
-  delay(1000); // rotate at maximum speed 1 seconds in in clockwise direction
+  // --------------------------------------
+  // Ultrasonic sensor 1
+  // --------------------------------------
 
-  // change direction
-  digitalWrite(IN1_PIN, LOW);   // control motor A spins anti-clockwise
-  digitalWrite(IN2_PIN, HIGH);  // control motor A spins anti-clockwise
+  float distance1 = ultrasonic1.getDistanceCm();
 
-  delay(1000); // rotate at maximum speed 1 seconds in in anti-clockwise direction
+  Serial.print("Ultrasonic 1: ");
 
-  for (int speed = 255; speed >= 0; speed--) {
-    analogWrite(ENA_PIN, speed); // control the speed
-    delay(10);
+  if (distance1 >= 0) {
+    Serial.print(distance1);
+    Serial.println(" cm");
+  } else {
+    Serial.println("No echo");
   }
 
-  delay(1000); // stop motor 1 second
+  // --------------------------------------
+  // Ultrasonic sensor 2
+  // --------------------------------------
+
+  float distance2 = ultrasonic2.getDistanceCm();
+
+  Serial.print("Ultrasonic 2: ");
+
+  if (distance2 >= 0) {
+    Serial.print(distance2);
+    Serial.println(" cm");
+  } else {
+    Serial.println("No echo");
+  }
+
+  // --------------------------------------
+  // Limit switch
+  // --------------------------------------
+
+  if (limitSwitch.pressed()) {
+    Serial.println("Limit switch pressed");
+  }
+
+  // --------------------------------------
+  // Drive control
+  // --------------------------------------
+
+  // Keep the robot stopped while testing sensors.
+  drive.stop();
+
+  delay(100);
 }
