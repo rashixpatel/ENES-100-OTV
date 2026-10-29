@@ -126,23 +126,24 @@ public:
     return digitalRead(switchPin);
   }
 
-class DutyCycle {
-  private:
-  int signalPin;
-  public:
+public:
   DutyCycle(int pin)
     : signalPin(pin) {}
 
   void begin() {
-    pinMode(signalPin : INPUT);
+    pinMode(signalPin, INPUT); // Fixed colon to comma
   }
 
   float getDutyCycle() {
-    //measure high/low pulse time
-    unsigned long high = pulseIn(signalPin, HIGH, 300000)
-    unsigned long low = pulseIn()
+    // measure high/low pulse time
+    unsigned long highTime = pulseIn(signalPin, HIGH, 30000UL);
+    unsigned long lowTime = pulseIn(signalPin, LOW, 30000UL);   
+    if (highTime == 0 || lowTime == 0) {
+        return -1.0;
+    }       
+    unsigned long totalCycle = highTime + lowTime;
+    return ((float)highTime / totalCycle) * 100.0f; 
   }
-}
 };
 
 #endif
