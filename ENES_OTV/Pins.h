@@ -7,10 +7,10 @@
 // ========================================
 
 const int ENB_PIN1 = 4;
-const int IN4_PIN1 = 5;
-const int IN3_PIN1 = 6;
-const int IN2_PIN1 = 7;
-const int IN1_PIN1 = 8;
+const int IN4_PIN1 = 14;
+const int IN3_PIN1 = 5;
+const int IN2_PIN1 = 6;
+const int IN1_PIN1 = 7;
 const int ENA_PIN1 = 9;
 
 
@@ -84,7 +84,7 @@ const int RX_PIN1 = 52;
 // ========================================
 // Duty Cycle
 // ========================================
-const int PWM1 = 1
+const int PWM1 = 8
 
 // Arduino Mega PWM pins include 2-13 and 44-46.
 // ENB_PIN1 = 4 is NOT PWM-capable.
