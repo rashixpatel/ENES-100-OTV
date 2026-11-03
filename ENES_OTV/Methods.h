@@ -3,16 +3,33 @@
 #include "Sensors.h"
 #include "Vision.h"
 
-void alignMission() {
-  //measure theta and turn
-  // align no, continue in loop, align yes stop
-  int theta = //jahiem
-  while(currentTheta != 0) {
-    //jahiem
 
+void alignMission(MecanumDrive &drive) {
+  // Measure theta and turn
+  // Align no, continue in loop, align yes stop
+
+  float currentTheta = getCurrentTheta();
+
+  while (abs(currentTheta) > 0.1) {
+
+    if (currentTheta < 0) {
+      // Turn left
+      drive.move(0, 0, 0.3);
+    } else {
+      // Turn right
+      drive.move(0, 0, -0.3);
+    }
+
+    // Check the vision system again
+    currentTheta = getCurrentTheta();
+
+    delay(50);
   }
 
+  // Stop motors when aligned
+  drive.stop();
 }
+
 
 void reachMission(MecanumDrive &drive, LimitSwitch &limitswitch) {
   while(!limitSwitch.pressed()) {
@@ -21,7 +38,6 @@ void reachMission(MecanumDrive &drive, LimitSwitch &limitswitch) {
 
   drive.stop();
   delay(5000);
-
 }
 
 Motor winchMotor(ENA_PIN3, IN1_PIN3, IN2_PIN3);

@@ -1,4 +1,4 @@
-
+#include "Vision.h"
 #include "Pins.h"
 #include "Drive.h"
 #include "Sensors.h"
@@ -47,6 +47,8 @@ void setup() {
   ultrasonic1.begin();
   ultrasonic2.begin();
   limitSwitch.begin();
+
+  beginVision();
 
   Serial.println("ENES OTV initialized");
 }
