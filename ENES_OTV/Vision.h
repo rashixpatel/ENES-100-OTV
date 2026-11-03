@@ -6,7 +6,7 @@
 
 // Initialize vision once
 void beginVision() {
-    Enes100.begin("Simulator", FIRE, 3, 1116, 8, 9);
+    Enes100.begin("Data Divers", DATA, 69, 1120, 50, 52);
     Enes100.println("Vision system started!");
 }
 
