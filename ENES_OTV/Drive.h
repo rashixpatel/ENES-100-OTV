@@ -1,12 +1,7 @@
-
 #ifndef DRIVE_H
 #define DRIVE_H
 
 #include <Arduino.h>
-
-// ========================================
-// Motor Class
-// ========================================
 
 class Motor {
 private:
@@ -23,11 +18,9 @@ public:
         pinMode(enPin, OUTPUT);
         pinMode(in1Pin, OUTPUT);
         pinMode(in2Pin, OUTPUT);
-
         motorSetPow(0);
     }
 
-    // Power range: -1.0 to 1.0
     void motorSetPow(float pow) {
         pow = constrain(pow, -1.0f, 1.0f);
 
@@ -35,7 +28,8 @@ public:
             pow = -pow;
         }
 
-        int pwm = (int)(abs(pow) * 255.0f);
+        // Fixed multiplication operator (*)
+        int pwm = (int)(fabsf(pow) * 255.0f);
 
         if (pow > 0) {
             digitalWrite(in1Pin, HIGH);
@@ -54,11 +48,6 @@ public:
     }
 };
 
-
-// ========================================
-// MecanumDrive Class
-// ========================================
-
 class MecanumDrive {
 private:
     Motor& frontLeft;
@@ -67,15 +56,8 @@ private:
     Motor& backRight;
 
 public:
-    MecanumDrive(
-        Motor& fl,
-        Motor& fr,
-        Motor& bl,
-        Motor& br
-    ) : frontLeft(fl),
-        frontRight(fr),
-        backLeft(bl),
-        backRight(br) {}
+    MecanumDrive(Motor& fl, Motor& fr, Motor& bl, Motor& br)
+        : frontLeft(fl), frontRight(fr), backLeft(bl), backRight(br) {}
 
     void begin() {
         frontLeft.begin();
@@ -84,11 +66,7 @@ public:
         backRight.begin();
     }
 
-    // x: strafe (right positive)
-    // y: forward (positive)
-    // rx: counterclockwise rotation positive
     void move(float x, float y, float rx) {
-
         x = constrain(x, -1.0f, 1.0f);
         y = constrain(y, -1.0f, 1.0f);
         rx = constrain(rx, -1.0f, 1.0f);
@@ -98,10 +76,7 @@ public:
         float bl = y - x + rx;
         float br = y + x - rx;
 
-        float maxPow = max(
-            max(abs(fl), abs(fr)),
-            max(abs(bl), abs(br))
-        );
+        float maxPow = max(max(abs(fl), abs(fr)), max(abs(bl), abs(br)));
 
         if (maxPow > 1.0f) {
             fl /= maxPow;

@@ -2,15 +2,16 @@
 #include "Pins.h"
 #include "Drive.h"
 #include "Sensors.h"
+#include "Navigation.h"
 
 // ========================================
 // Mecanum drive motors
 // ========================================
 
-Motor frontLeft(ENA_PIN1, IN1_PIN1, IN2_PIN1);
-Motor frontRight(ENB_PIN1, IN3_PIN1, IN4_PIN1);
-Motor backLeft(ENA_PIN2, IN1_PIN2, IN2_PIN2);
-Motor backRight(ENB_PIN2, IN3_PIN2, IN4_PIN2);
+Motor frontLeft(ENA_PIN1, IN1_PIN1, IN2_PIN1, false);
+Motor frontRight(ENB_PIN1, IN3_PIN1, IN4_PIN1, false);
+Motor backLeft(ENA_PIN2, IN1_PIN2, IN2_PIN2, false);
+Motor backRight(ENB_PIN2, IN3_PIN2, IN4_PIN2, false);
 
 MecanumDrive drive(
   frontLeft,

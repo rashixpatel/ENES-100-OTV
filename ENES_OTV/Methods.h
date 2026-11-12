@@ -3,79 +3,60 @@
 #include "Sensors.h"
 #include "Vision.h"
 
+// Instantiate duty sensor for copper tape reading
+DutyCycle dutySensor(OUTPUT_PIN1);
 
 void alignMission(MecanumDrive &drive) {
-  // Measure theta and turn
-  // Align no, continue in loop, align yes stop
-
   float currentTheta = getCurrentTheta();
 
   while (abs(currentTheta) > 0.1) {
-
     if (currentTheta < 0) {
-      // Turn left
       drive.move(0, 0, 0.3);
     } else {
-      // Turn right
       drive.move(0, 0, -0.3);
     }
-
-    // Check the vision system again
     currentTheta = getCurrentTheta();
-
     delay(50);
   }
-
-  // Stop motors when aligned
   drive.stop();
 }
 
-
 void reachMission(MecanumDrive &drive, LimitSwitch &limitswitch) {
-  while(!limitSwitch.pressed()) {
+  while(!limitswitch.pressed()) {
     drive.move(0, 0.5, 0);
   }
-
   drive.stop();
   delay(5000);
 }
 
 Motor winchMotor(ENA_PIN3, IN1_PIN3, IN2_PIN3);
-void probeAndSense() {
 
-    //Lower probe with winch
+void probeAndSense() {
     winchMotor.motorSetPow(0.5f);  
     unsigned long startTime = millis();
     
-    //Continue lowering for 5 seconds while measuring/sensing
+    // Fixed subtraction for elapsed time calculation (- startTime)
     while (millis() - startTime < 5000) {
-     // Check magnet
-     if (hall.detected()) {
-      Serial.println("Magnetism detected");
-      } else {
-        Serial.println("No magnetism detected");
-      }
+       if (hall.detected()) {
+         Serial.println("Magnetism detected");
+       } else {
+         Serial.println("No magnetism detected");
+       }
 
-    //Measure duty cycle from copper tape
-      float duty = dutySensor.getDutyCycle();
-      if (duty >= 0) {
-          Serial.print("Duty Cycle: ");
-          Serial.print(duty);
-          Serial.println("%");
-      } else {
-          Serial.println("No signal detected");
-      }
-      
-      delay(1000);
-}
+       float duty = dutySensor.getDutyCycle();
+       if (duty >= 0) {
+           Serial.print("Duty Cycle: ");
+           Serial.print(duty);
+           Serial.println("%");
+       } else {
+           Serial.println("No signal detected");
+       }
+       
+       delay(1000);
+    }
 
-    //Stop lowering after 5 seconds
     winchMotor.motorSetPow(0.0);
-    //Raise the probe back up
     winchMotor.motorSetPow(-0.5);
-    delay(5000); // Adjust depending on how long it takes
-    //Stop the winch completely
+    delay(5000); 
     winchMotor.motorSetPow(0.0);
-
-  
 }
