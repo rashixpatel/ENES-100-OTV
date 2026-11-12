@@ -13,7 +13,7 @@ public:
     : outputPin(pin), activeLow(activeLow) {}
 
   void begin() {
-    pinMode(outputPin, INPUT);
+    pinMode(outputPin, INPUT_PULLUP);
   }
 
   bool detected() {
@@ -74,7 +74,7 @@ public:
     : switchPin(pin), activeLow(activeLow) {}
 
   void begin() {
-    pinMode(switchPin, INPUT);
+    pinMode(switchPin, INPUT_PULLUP);
   }
 
   bool pressed() {

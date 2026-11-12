@@ -64,39 +64,41 @@ void loop() {
   // Hall effect sensor
   // --------------------------------------
 
-  if (hall.detected()) {
-    Serial.println("Magnet detected");
-  }
+  //if (hall.detected()) {
+  //  Serial.println("Magnet detected");
+  //} else {
+  //  Serial.println("Magnet not detected");
+  //}
 
   // --------------------------------------
   // Ultrasonic sensor 1
   // --------------------------------------
 
-  float distance1 = ultrasonic1.getDistanceCm();
+  //float distance1 = ultrasonic1.getDistanceCm();
 
-  Serial.print("Ultrasonic 1: ");
+  //Serial.print("Ultrasonic 1: ");
 
-  if (distance1 >= 0) {
-    Serial.print(distance1);
-    Serial.println(" cm");
-  } else {
-    Serial.println("No echo");
-  }
+  //if (distance1 >= 0) {
+  //  Serial.print(distance1);
+  //  Serial.println(" cm");
+  //} else {
+  //  Serial.println("No echo");
+  //}
 
   // --------------------------------------
   // Ultrasonic sensor 2
   // --------------------------------------
 
-  float distance2 = ultrasonic2.getDistanceCm();
+  //float distance2 = ultrasonic2.getDistanceCm();
 
-  Serial.print("Ultrasonic 2: ");
+  //Serial.print("Ultrasonic 2: ");
 
-  if (distance2 >= 0) {
-    Serial.print(distance2);
-    Serial.println(" cm");
-  } else {
-    Serial.println("No echo");
-  }
+  //if (distance2 >= 0) {
+  //  Serial.print(distance2);
+  //  Serial.println(" cm");
+  //} else {
+  //  Serial.println("No echo");
+  //}
 
   // --------------------------------------
   // Limit switch
