@@ -1,10 +1,16 @@
+#ifndef MISSION_H
+#define MISSION_H
+
+#include <Arduino.h>
 #include "Pins.h"
 #include "Drive.h"
 #include "Sensors.h"
 #include "Vision.h"
 
-// Instantiate duty sensor for copper tape reading
+// Instantiate sensor/motor for missions
+extern HallEffect hall; // Declared in main
 DutyCycle dutySensor(OUTPUT_PIN1);
+Motor winchMotor(ENA_PIN3, IN1_PIN3, IN2_PIN3);
 
 void alignMission(MecanumDrive &drive) {
   float currentTheta = getCurrentTheta();
@@ -22,21 +28,19 @@ void alignMission(MecanumDrive &drive) {
 }
 
 void reachMission(MecanumDrive &drive, LimitSwitch &limitswitch) {
-  while(!limitswitch.pressed()) {
+  unsigned long startTime = millis();
+  while(!limitswitch.pressed() && (millis() - startTime < 15000)) {
     drive.move(0, 0.5, 0);
   }
   drive.stop();
   delay(5000);
 }
 
-Motor winchMotor(ENA_PIN3, IN1_PIN3, IN2_PIN3);
-
 void probeAndSense() {
     winchMotor.motorSetPow(0.5f);  
     unsigned long startTime = millis();
     
-    // Fixed subtraction for elapsed time calculation (- startTime)
-    while (millis() - startTime < 5000) {
+    while ((millis() - startTime) < 5000) {
        if (hall.detected()) {
          Serial.println("Magnetism detected");
        } else {
@@ -56,7 +60,10 @@ void probeAndSense() {
     }
 
     winchMotor.motorSetPow(0.0);
+    delay(500);
     winchMotor.motorSetPow(-0.5);
     delay(5000); 
     winchMotor.motorSetPow(0.0);
 }
+
+#endif
